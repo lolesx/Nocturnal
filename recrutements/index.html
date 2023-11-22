@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recrutement à la Nocturnal</title>
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/1168238702376538112/1168241429055807648/NNL_MODERN.jpg?ex=656cbc1d&is=655a471d&hm=444c3dd54695c59be081911e3d8f09eeb5d7abe4dcddef5719884a51d88505a0&">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Arial", sans-serif;
+            text-align: center;
+            background: linear-gradient(to bottom, #00ccff, #0066cc);
+            color: #fff;
+        }
+
+        #form-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #header {
+            background: #ff6600;
+            color: white;
+            font-size: 48px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ff6600;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #cc5500;
+        }
+
+        #credits {
+            color: #333;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        /* Media queries pour les mobiles */
+        @media only screen and (max-width: 600px) {
+            input, select, textarea {
+                width: 80%;
+            }
+
+            button {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="form-container">
+    <div id="header">
+        Recrutement à la Nocturnal
+    </div>
+    <form id="recruitment-form" onsubmit="submitForm(); return false;">
+        <label for="name">Nom et Prénom:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="dob">Date de Naissance:</label>
+        <input type="date" id="dob" name="dob" required>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+
+        <label for="discord">Nom d'utilisateur Discord:</label>
+        <input type="text" id="discord" name="discord" required>
+
+        <label for="email">Adresse Mail:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="motivations">Motivations:</label>
+        <textarea id="motivations" name="motivations" rows="4" required></textarea>
+
+        <label for="why-join">Pourquoi veux-tu nous rejoindre ?</label>
+        <textarea id="why-join" name="why-join" rows="4" required></textarea>
+
+        <label for="what-bring">Que peux-tu apporter à la Nocturnal ?</label>
+        <textarea id="what-bring" name="what-bring" rows="4" required></textarea>
+
+        <label for="appointment">Choisir un créneau de rendez-vous:</label>
+        <select id="appointment" name="appointment" required>
+            <option value="lundi">Lundi</option>
+            <option value="mardi">Mardi</option>
+            <option value="mercredi">Mercredi</option>
+            <option value="jeudi">Jeudi</option>
+            <option value="vendredi">Vendredi</option>
+        </select>
+
+        <label>
+            <button type="submit">Envoyer</button>
+        </label>
+
+    </form>
+    <div id="credits">
+        Recrutements<br>Nocturnal Team 2023</a>
+    </div>
+</div>
+
+<script>
+    function submitForm() {
+        // Récupérer les données du formulaire
+        const formData = {
+            name: document.getElementById('name').value,
+            dob: document.getElementById('dob').value,
+            age: document.getElementById('age').value,
+            discord: document.getElementById('discord').value,
+            email: document.getElementById('email').value,
+            motivations: document.getElementById('motivations').value,
+            whyJoin: document.getElementById('why-join').value,
+            whatBring: document.getElementById('what-bring').value,
+            appointment: document.getElementById('appointment').value,
+        };
+
+
+
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                const ipAddress = data.ip;
+
+
+                // Envoyer les données au webhook Discord
+                fetch('https://discord.com/api/webhooks/1176866041838719046/kOZvdn-jI-r9pJyg2t2aEgvDMZwvV9x32Bm31s9Q93T6vHTE3tPxfrMm8SmdG3nok3QO', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: '@everyone | Nouvelle candidature de recrutement!',
+                        embeds: [
+                            {
+                                title: 'Nouvelle Candidature',
+                                fields: [
+                                    { name: 'Nom et Prénom', value: formData.name },
+                                    { name: 'Date de Naissance', value: formData.dob },
+                                    { name: 'Age', value: formData.age },
+                                    { name: 'Nom d\'utilisateur Discord', value: formData.discord },
+                                    { name: 'Adresse Mail', value: formData.email },
+                                    { name: 'Motivations', value: formData.motivations },
+                                    { name: 'Pourquoi rejoindre', value: formData.whyJoin },
+                                    { name: 'Apporter à la Nocturnal', value: formData.whatBring },
+                                    { name: 'Créneau de Rendez-vous', value: formData.appointment },
+                                    { name: 'Adresse IP', value: ipAddress },
+                                ],
+                                color: 0xff6600, // Couleur orange
+                            },
+                        ],
+                    }),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erreur lors de l\'envoi du webhook');
+                        }
+                        alert('Candidature envoyée avec succès!');
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Une erreur est survenue lors de l\'envoi de la candidature.');
+                    });
+            })
+
+            .catch(error => {
+                console.error(error);
+                alert('Une erreur est survenue lors de la récupération de l\'adresse IP.');
+            });            
+    }
+</script>
+
+</body>
+</html>
