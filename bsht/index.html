@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Bsahtek Webhook Sender">
+    <meta property="og:description" content="BWS is a mass webhook sender, it is made for raids or trolls.">
+    <meta property="og:image" content="https://media.discordapp.net/attachments/1183872206862811137/1184954918105252063/b2e44a06-5be4-4f44-ba5f-0663fb1b5cee.jpg?ex=658dda43&is=657b6543&hm=24361584f7647eecc02087902128f7469c036dd166ca81bb1370641773f26232&=&format=webp&width=846&height=846">
+    <title>BSHT Webhook | By Loles</title>
+    <link rel="icon" href="https://media.discordapp.net/attachments/1183872206862811137/1184954918105252063/b2e44a06-5be4-4f44-ba5f-0663fb1b5cee.jpg?ex=658dda43&is=657b6543&hm=24361584f7647eecc02087902128f7469c036dd166ca81bb1370641773f26232&=&format=webp&width=846&height=846">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #main-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #title-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000000;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="title-container">
+        <h1>BSHT Webhook | NNL Group</h1>
+    </div>
+
+    <div id="main-container">
+        <form id="webhookForm">
+            <label for="webhookURL">Webhook URL:</label>
+            <input type="text" id="webhookURL" name="webhookURL" placeholder="Enter Webhook URL" required>
+
+            <label for="customUsername">Webhook Username:</label>
+            <input type="text" id="customUsername" name="customUsername" placeholder="Enter Custom Username" required>
+
+            <label for="threads">Threads:</label>
+            <input type="number" id="threads" name="threads" placeholder="Enter Number of Threads" required>
+
+            <label for="messageContent">Content:</label>
+            <textarea id="messageContent" name="messageContent" placeholder="Enter Message Content" required></textarea>
+
+            <button type="button" onclick="startSending()">Start</button>
+        </form>
+    </div>
+
+    <script>
+        let sendingInterval;
+
+        function startSending() {
+            const webhookURL = document.getElementById('webhookURL').value;
+            const customUsername = document.getElementById('customUsername').value;
+            const threads = document.getElementById('threads').value;
+            const messageContent = document.getElementById('messageContent').value;
+
+            const message = {
+                content: messageContent,
+                username: customUsername,
+                avatar_url: "",
+            };
+
+            const sendRequest = () => {
+                fetch(webhookURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(message),
+                })
+                .then(response => {
+                    if (response.status === 204) {
+                        console.log('Message Successfully Sent.');
+                    } else if (response.status === 429) {
+                        console.log('You are being rate limited. Waiting for 7 seconds.');
+                        setTimeout(sendRequest, 7000);
+                    } else if (response.status === 404) {
+                        console.log('Can\'t find the webhook.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            };
+
+            sendingInterval = setInterval(() => {
+                for (let i = 0; i < threads; i++) {
+                    sendRequest();
+                }
+            }, 2000);  // Change the interval as needed (milliseconds)
+            
+            // Disable form fields
+            document.getElementById('webhookURL').disabled = true;
+            document.getElementById('customUsername').disabled = true;
+            document.getElementById('threads').disabled = true;
+            document.getElementById('messageContent').disabled = true;
+
+            // Replace Start button with Stop button
+            const startButton = document.querySelector('button');
+            startButton.textContent = 'Stop';
+            startButton.onclick = stopSending;
+        }
+
+        function stopSending() {
+            clearInterval(sendingInterval);
+
+            // Enable form fields
+            document.getElementById('webhookURL').disabled = false;
+            document.getElementById('customUsername').disabled = false;
+            document.getElementById('threads').disabled = false;
+            document.getElementById('messageContent').disabled = false;
+
+            // Replace Stop button with Start button
+            const stopButton = document.querySelector('button');
+            stopButton.textContent = 'Start';
+            stopButton.onclick = startSending;
+        }
+    </script>
+</body>
+</html>
