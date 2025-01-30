@@ -152,7 +152,7 @@
         }).then(response => {
             if (response.ok) {
                 alert("Candidature envoyée avec succès!");
-                <meta http-equiv="refresh" content="5;url=https://lolesx.github.io/Nocturnal/merci-pour-la-candidature" />
+                window.location.href = "https://lolesx.github.io/Nocturnal/merci-pour-la-candidature";
                 document.getElementById("recruitment-form").reset();
             } else {
                 alert("Erreur lors de l'envoi. Veuillez réessayer.");
